@@ -34,6 +34,7 @@ class sendRecipientLink {
             this.event = model;
             const result = {
               eventId: model.attributes.id,
+              title: model.attributes.title,
               firstName: model.relations.recipient.attributes.first_name,
               lastName: model.relations.recipient.attributes.last_name,
               email: model.relations.recipient.attributes.email
@@ -46,7 +47,7 @@ class sendRecipientLink {
   }
 
   sendRecipientEmail (recipient, cb) {
-    const link = `http://localhost:3000/events/${recipient.eventId}`;
+    const link = `${recipient.title}: http://localhost:3000/events/${recipient.eventId}`;
     email.sendToRecipient(link, recipient.email, cb);
   }
 

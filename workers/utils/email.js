@@ -9,7 +9,7 @@ exports.sendToRecipient = (link, email, cb) => {
       from: 'Josh <josh@app6ac6b571b02e4efcbbba7f891d5131b0.mailgun.org>',
       to: email,
       subject: 'PepClock tolls for Thee!',
-      text: 'You have Pep over at PepClock: ' + link
+      text: 'You have Pep over at PepClock! \n' + link
     }
   })
   .then(response => cb(null, response))
