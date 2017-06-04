@@ -12,8 +12,8 @@ exports.sendToRecipient = (link, email, cb) => {
       text: 'You have Pep over at PepClock: ' + link
     }
   })
-  .then(response => cb())
-  .catch(err => cb('ERROR!'));
+  .then(response => cb(null, response))
+  .catch(err => cb(err, null));
 };
 
 exports.batchSendInvitations = (recipientVariable, emails, cb) => {
@@ -26,7 +26,7 @@ exports.batchSendInvitations = (recipientVariable, emails, cb) => {
       'recipient-variables': recipientVariable,
       subject: 'Contribute some Pep to your Friend',
       text: 'Your friends are building love. Join in over at PepClock:\n%recipient.link%'
-    } 
+    }
   })
   .then(response => cb())
   .catch(response => cb('ERROR!'));

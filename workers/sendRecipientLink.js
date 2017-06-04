@@ -1,20 +1,69 @@
-// When this worker is called:
-  // 1. Find the first event that needs to be delivered
-  // 2. For the event, Send email to recipient with event link
-  // 3. Mark event as sent in Events table
+const models = require('../db/models');
+const email = require('./utils/email');
 
-// 1. Find the first event that needs to be delivered
-// Query the Events table for events with delivery_time before "now" AND {status: 'not sent'}
-  // statuses: ['not sent', 'sent', 'opened', 'attempted']
-// IF no results found
-  // return 'nothing to send' / exit out
-// ELSE
-  // Format DB query result for Mailgun sending AND hold on to event_id for updating status later
+class sendRecipientLink {
+  constructor() {
+    this.event = null;
+  }
 
-// 2. For the event, Send email to recipient with event link
-  // Use a utility function to map and give to mailgun
+  work (cb) {
+    this.getEventsToDeliver((err, data) => {
+      if (err) {
+        cb(err);
+      } else {
+        this.sendRecipientEmail(data, (err, data) => {
+          if (err) {
+            cb(err);
+          } else {
+            this.updateEventStatus('sent', (err, data) => {
+              cb(err, data);
+            });
+          }
+        });
+      }
+    });
+  }
 
-// 3. Mark event as sent in Events table
-  // IF send response is success
-    // Use event_id to update status to 'sent'
-  // ELSE, Use event_id to update status to 'attempted'
+  getEventsToDeliver (cb) {
+    models.Event
+    .where('delivery_time', '<', 'now()')
+    .where({status: 'not sent'})
+    .fetch({withRelated: ['recipient']})
+        .then(model => {
+          if (model) {
+            this.event = model;
+            const result = {
+              eventId: model.attributes.id,
+              firstName: model.relations.recipient.attributes.first_name,
+              lastName: model.relations.recipient.attributes.last_name,
+              email: model.relations.recipient.attributes.email
+            };
+            cb(null, result);
+          } else {
+            cb('No events to send', null);
+          }
+        });
+  }
+
+  sendRecipientEmail (recipient, cb) {
+    const link = `http://localhost:3000/events/${recipient.eventId}`;
+    email.sendToRecipient(link, recipient.email, cb);
+  }
+
+  updateEventStatus (status, cb) {
+    this.event.save({status: status}, {method: 'update'})
+      .then(response => cb(null, response))
+      .catch(err => cb(err, null));
+  }
+
+}
+
+const worker = new sendRecipientLink();
+
+worker.work((err, message) => {
+  if (err) {
+    console.log(err);
+  } else {
+    console.log(message);
+  }
+});
