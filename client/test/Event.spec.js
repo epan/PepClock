@@ -3,7 +3,6 @@ import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import Event from '../src/components/Event';
 
-
 describe('Event Component', function() {
   // Set this.props URL params manually
   const id = { params: { id: '1' } };
@@ -21,6 +20,7 @@ describe('Event Component', function() {
   });
 
   it('contains a form where the user can add a contribution', function() {
-    expect(wrapper.contains(<label>Enter your message</label>)).to.equal(true);
+    wrapper.setState({ title: 'Pool Party', hasPermissionToView: true });
+    expect(wrapper.contains(<button className="btn btn-primary float-right">Create Post</button>)).to.equal(true);
   });
 });

@@ -122,6 +122,16 @@ class Event extends React.Component {
       let timeToLaunch = moment().to(deliveryTime);
       let happen = timeToLaunch.includes('ago') ? 'Happened' : 'Happening';
 
+      const uploadConfirmation = this.state.contributionType
+        ? (
+            <p className="text-success">
+              <span className="text-capitalize">
+                {this.state.contributionType}
+              </span> successfully uploaded
+            </p>
+          )
+        : null;
+
       return (
         <div className="event">
           <div className="row">
@@ -136,11 +146,19 @@ class Event extends React.Component {
               <hr />
               <form onSubmit={this.handleSubmit}>
                 <div className="form-group w-75 mx-auto mb-5">
-                  <label>Enter your message</label>
-                  <textarea className="form-control mb-2" rows="3" onChange={this.handleChange} value={this.state.contributionText}></textarea>
-                <a className="btn btn-success" href="#" onClick={this.showPicker}>
-                <i className="fa fa-picture-o" style={{cursor: 'pointer', color: 'white'}} />  Photo/Video</a>
-                <button className="btn btn-primary float-right">Create Post</button>
+                  {uploadConfirmation}
+                  <textarea
+                    className="form-control mb-2"
+                    rows="3"
+                    onChange={this.handleChange}
+                    value={this.state.contributionText}
+                    placeholder="Enter your message">
+                  </textarea>
+                  <a className="btn btn-success" href="#" onClick={this.showPicker}>
+                    <i className="fa fa-picture-o" style={{cursor: 'pointer', color: 'white'}} />
+                    Photo/Video
+                  </a>
+                  <button className="btn btn-primary float-right">Create Post</button>
                 </div>
               </form>
             </div>
