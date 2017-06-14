@@ -17,7 +17,7 @@ class Event extends React.Component {
       contributionType: '',
       contributionMediaUrl: '',
       hasPermissionToView: null,
-      delivery_time: '',
+      deliveryTime: '',
       recipient: {},
       curSecond: moment().second(),
       curMinute: moment().minute(),
@@ -86,8 +86,8 @@ class Event extends React.Component {
 
   getEventContent () {
     axios.get(`/api/events/${this.state.eventId}`)
-    .then(({ data: { title, delivery_time, recipient} }) => {
-      this.setState({ title, delivery_time, recipient });
+    .then(({ data: { title, deliveryTime, recipient} }) => {
+      this.setState({ title, deliveryTime, recipient });
       this.updateContributions();
     })
     .catch(error => {
@@ -114,12 +114,12 @@ class Event extends React.Component {
 
     if (this.state.hasPermissionToView) {
       const { id } = this.props.match.params;
-      const { title, description, delivery_time } = this.state;
+      const { title, description, deliveryTime } = this.state;
 
-      let launchTimeDisplay = moment(delivery_time).format('MMM Do YYYY || hh : mm');
-      let timeOfDay = moment(delivery_time).format('a');
+      let launchTimeDisplay = moment(deliveryTime).format('MMM Do YYYY || hh : mm');
+      let timeOfDay = moment(deliveryTime).format('a');
       let launchDisplay = launchTimeDisplay + ' ' + timeOfDay;
-      let timeToLaunch = moment().to(delivery_time);
+      let timeToLaunch = moment().to(deliveryTime);
       let happen = timeToLaunch.includes('ago') ? 'Happened' : 'Happening';
 
       return (
