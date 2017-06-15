@@ -28,7 +28,8 @@ describe('Authentication', () => {
         body: {
           first: 'Admin',
           password: 'admin123',
-          email: 'admin@domain.com'
+          email: 'admin@domain.com',
+          two_factor_enabled: 1
         }
       });
       request.flash = fakeFlash;
@@ -49,7 +50,8 @@ describe('Authentication', () => {
         body: {
           first: 'Admin',
           password: 'incorrect',
-          email: 'admin@domain.com'
+          email: 'admin@domain.com',
+          two_factor_enabled: 1
         }
       });
       request.flash = fakeFlash;
@@ -70,7 +72,8 @@ describe('Authentication', () => {
         body: {
           first: 'Admin',
           password: 'admin123',
-          email: 'admin@domain.com'
+          email: 'admin@domain.com',
+          two_factor_enabled: 1
         }
       });
       request.flash = fakeFlash;
