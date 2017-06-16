@@ -158,4 +158,14 @@ describe('Authorized Routes', function () {
         })
         .end(done);
     });
+
+    xit('should ask the user if they would like to enable 2FA after creating a new account', done => {
+      agent
+        .get('/signup')
+        .send({email: 'twoFactorNone@domain.com', password: 'TwoFactorNone', two_factor_enabled: 0})
+        .expect((res) => {
+          expect(res.header.location).to.equal('/signup')
+        })
+        .end(done);
+    });
 });
