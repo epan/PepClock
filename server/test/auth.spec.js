@@ -1,5 +1,7 @@
 require('dotenv').config();
 const expect = require('chai').expect;
+const request = require('supertest');
+const app = require('../app.js');
 const httpMocks = require('node-mocks-http');
 const dbUtils = require('../../db/lib/utils.js');
 const passport = require('../middleware/passport');
@@ -65,9 +67,7 @@ describe('Authentication', () => {
   });
 
   describe('Passport local-signup strategy', () => {
-    //This test needs to be refactored. The expected now is to redirect to /signup
-    //and have the info message show up there
-    xit('passport passes false if email already exists', done => {
+    it('passport passes false if email already exists', done => {
       let request = httpMocks.createRequest({
         body: {
           first: 'Admin',
@@ -90,7 +90,8 @@ describe('Authentication', () => {
         body: {
           first: 'Test4',
           password: '101112',
-          email: 'TestUser4@mail.com'
+          email: 'TestUser4@mail.com',
+          two_factor_enabled: 1
         }
       });
       request.flash = fakeFlash;
