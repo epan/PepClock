@@ -128,11 +128,17 @@ module.exports.updateAndRender = (req, res) => {
 
         invitation.save('rsvp', 'true', {method: 'update'})
           .then(() => {
-            return new models.Contributor({
-              user_id: req.user.id,
-              event_id: eventId,
-              role: 'contributor'
-            }).save();
+            models.Contributor.where({user_id: req.user.id, event_id: eventId}).fetch()
+              .then(result => {
+                if (!result) {
+                  return new models.Contributor({
+                    user_id: req.user.id,
+                    event_id: eventId,
+                    role: 'contributor'
+                  }).save();
+                }
+                return null;
+              });
           })
           .then(() => {
             res.redirect(req.path);
