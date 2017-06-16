@@ -138,4 +138,44 @@ describe('Authorized Routes', function () {
       })
       .end(done);
   });
+
+    it ('should send the user to totp-setup page if 2FA is enabled', done => {
+      agent
+        .post('/login')
+        .send({email: 'twoFactor@domain.com', password: 'twoFactor', two_factor_enabled: 2})
+        .expect((res) => {
+          expect(res.header.location).to.equal('/totp-setup');
+        })
+        .end(done);
+    });
+
+    it('should send the user from totp-setup to totp-input', done => {
+      agent
+        .get('/totp-setup')
+        .send({email: 'twoFactor@domain.com', password: 'twoFactor', two_factor_enabled: 2})
+        .expect((res) => {
+          expect(res.header.location).to.equal('/totp-input');
+        })
+        .end(done);
+    });
+
+    it('should ask the user if they would like to enable 2FA after creating a new account', done => {
+      agent
+        .post('/signup')
+        .send({email: 'twoFactorNone@domain.com', password: 'TwoFactorNone', two_factor_enabled: 0})
+        .expect((res) => {
+          expect(res.text).to.include('Found. Redirecting to /signup')
+        })
+        .end(done);
+    });
+
+    it('should send the user to their dashboard if 2FA is disabled', done=> {
+      agent
+        .post('/login')
+        .send({email: 'TwoFactorNoWay@domain.com', password: 'TwoFactorNoWay', two_factor_enabled: 1})
+        .expect((res) => {
+          expect(res.header.location).to.equal('/dashboard');
+        })
+        .end(done);
+    });
 });
